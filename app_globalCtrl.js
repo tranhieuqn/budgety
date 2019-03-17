@@ -20,12 +20,10 @@ var controller = (function(dataCtrl, UICtrl) {
     document.querySelector(DOMStrings.container).addEventListener('click', ctrlDeleteItem);
   }
 
-  // delete item from the data and UI
   var ctrlDeleteItem = function(event) {
-    if (!event.target.matches('.ion-ios-close-outline')) {
+    if (!event.target.matches(DOMStrings.deleteButton)) {
       return;
     }
-
     // in case delete button is clicked
     // get item type, item id
     var itemHtmlId, itemType, itemId;
@@ -46,35 +44,40 @@ var controller = (function(dataCtrl, UICtrl) {
     // Update UI budget
     var publicData = dataCtrl.getPublicData();
     UICtrl.updateBudget(
-      publicData.income, publicData.expenses, publicData.availableBudget, publicData.percentage);
+      publicData.income,
+      publicData.expenses,
+      publicData.availableBudget,
+      publicData.totalPercentage);
     // Update percentage of each item
-    var allItems = dataCtrl.getAllItems();
-    UIController.updatePercentageForEachItem(allItems['inc'], allItems['exp']);
+    UIController.updatePercentageForEachItem(publicData.allItemsPercentages.exp,
+                                             publicData.allItemsPercentages.inc);
   }
 
-  // add item to data and display it
   var ctrlAddItem = function() {
-    // 1. Get the field input data and validate
+    // get the field input data and validate
     var input = UICtrl.getInput();
     if (input.description === "" || isNaN(input.value) || input.value <= 0) {
       alert('Please input valid information!');
       return;
     }
-    // 2. Add item to the data
+    // add item to the data
     var newItem = dataCtrl.addItem(input.type, input.description, input.value);
-    // 3. Calculate the budget
+    // calculate the budget
     dataCtrl.calculateBudget();
-    // 4. Add the item to the UI
+    // add the item to the UI
     UICtrl.addItem(newItem, input.type);
     // clear input fields
     UICtrl.clearFields();
-    // 5. Display the budget on the UI
+    // display the budget on the UI
     var publicData = dataCtrl.getPublicData();
     UICtrl.updateBudget(
-      publicData.income, publicData.expenses, publicData.availableBudget, publicData.percentage);
-    // 6. Update percentage of each item
-    var allItems = dataCtrl.getAllItems();
-    UIController.updatePercentageForEachItem(allItems['inc'], allItems['exp']);
+      publicData.income,
+      publicData.expenses,
+      publicData.availableBudget,
+      publicData.totalPercentage);
+    // update percentage of each item
+    UIController.updatePercentageForEachItem(publicData.allItemsPercentages.exp,
+                                             publicData.allItemsPercentages.inc);
   };
 
   return {

@@ -1,2 +1,2 @@
 # budgety
-Tool for budget management.
+Tool for budget management (js)

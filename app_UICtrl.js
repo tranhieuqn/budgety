@@ -12,6 +12,9 @@ var UIController = (function() {
     availableBudgetLabel: '.budget__value',
     percentageLabel: '.budget__expenses--percentage',
     container: '.container',
+    expPercentages: '.exp__percentage',
+    incPercentages: '.inc__percentage',
+    deleteButton: '.ion-ios-close-outline',
   }
 
   return {
@@ -33,7 +36,7 @@ var UIController = (function() {
             '<div class="item__description">%description%</div>' +
             '<div class="right clearfix">' +
               '<div class="item__value">%value%</div>' +
-              '<div class="item__percentage">%percentage%</div>' +
+              '<div class="inc__percentage">%21%</div>' +
               '<div class="item__delete">' +
                   '<button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>' +
               '</div>' +
@@ -46,7 +49,7 @@ var UIController = (function() {
             '<div class="item__description">%description%</div>' +
             '<div class="right clearfix">' +
                 '<div class="item__value">%value%</div>' +
-                '<div class="item__percentage">%percentage%</div>' +
+                '<div class="exp__percentage">%21%</div>' +
                 '<div class="item__delete">' +
                     '<button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>' +
                 '</div>' +
@@ -58,7 +61,6 @@ var UIController = (function() {
       html = html.replace('%description%', obj.description)
              .replace('%value%', obj.value)
              .replace('%id%', obj.id)
-             .replace('%percentage%', obj.percentage + '%')
 
       // Insert the HTML into the DOM
       itemListDOM.insertAdjacentHTML('beforeend', html);
@@ -80,7 +82,7 @@ var UIController = (function() {
     getDOMstrings: function() {
       return DOMstrings;
     },
-    updateBudget: function(income, expenses, availableBudget , percentage) {
+    updateBudget: function(income, expenses, availableBudget , totalPercentage) {
       // update budget
       var incomeField = document.querySelector(DOMstrings.incomeLabel);
       var expensesField = document.querySelector(DOMstrings.expensesLabel);
@@ -105,22 +107,27 @@ var UIController = (function() {
         availableBudgetField.innerHTML = availableBudget;
       }
 
-      if (percentage >= 0) {
-        percentageField.innerHTML = percentage + '%';
+      if (totalPercentage >= 0) {
+        percentageField.innerHTML = totalPercentage + '%';
       } else {
         percentageField.innerHTML = '---';
       }
     },
-    updatePercentageForEachItem: function(incomeArr, expenseArr) {
-      var childContainPercentValue;
-      incomeArr.forEach(function(current) {
-        childContainPercentValue = document.querySelector('#income-' + current.id).childNodes[1].childNodes[1];
-        childContainPercentValue.replaceChild(document.createTextNode(current.percentage), childContainPercentValue.childNodes[0]);
-      });
-      expenseArr.forEach(function(current) {
-        childContainPercentValue = document.querySelector('#expense-' + current.id).childNodes[1].childNodes[1];
-        childContainPercentValue.replaceChild(document.createTextNode(current.percentage), childContainPercentValue.childNodes[0]);
-      });
+    updatePercentageForEachItem: function(expPercs, incPercs) {
+      var expPercNodes, incPercNodes, updatePercForEachNodeList, replacePerc;
+      expPercNodes = document.querySelectorAll(DOMstrings.expPercentages);
+      incPercNodes = document.querySelectorAll(DOMstrings.incPercentages);
+      updatePercForEachNodeList = function(nodeList, percList, callback) {
+          for (var i = 0; i < nodeList.length; i++) {
+            callback(nodeList[i], percList[i]);
+        }
+      }
+      replacePerc = function(node, perc) {
+        node.innerHTML = perc + '%';
+      }
+      updatePercForEachNodeList(expPercNodes, expPercs, replacePerc);
+      updatePercForEachNodeList(incPercNodes, incPercs, replacePerc);
+
     },
     deleteItem: function(type, id) {
       var item;
