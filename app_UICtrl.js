@@ -15,6 +15,22 @@ var UIController = (function() {
     expPercentages: '.exp__percentage',
     incPercentages: '.inc__percentage',
     deleteButton: '.ion-ios-close-outline',
+    monthField: '.budget__title--month',
+  }
+  var formatNumber = function(inputNum) {
+    if (isNaN(inputNum)) {
+      return inputNum;
+    }
+    var numStr, int, dec, num = '';
+    numStr = Math.abs(inputNum).toFixed(2);
+    int = numStr.split('.')[0];
+    dec = numStr.split('.')[1];
+    while (int.length > 3) {
+      num += int.substr(0, 3) + ',';
+      int = int.substr(3, int.length - 3);
+    }
+    num += int;
+    return ((inputNum >= 0) ? '' : '-') + num + '.' + dec;
   }
 
   return {
@@ -59,7 +75,7 @@ var UIController = (function() {
 
       // Replace placeholder text with actual data
       html = html.replace('%description%', obj.description)
-             .replace('%value%', obj.value)
+             .replace('%value%', formatNumber(obj.value))
              .replace('%id%', obj.id)
 
       // Insert the HTML into the DOM
@@ -89,29 +105,10 @@ var UIController = (function() {
       var availableBudgetField = document.querySelector(DOMstrings.availableBudgetLabel);
       var percentageField = document.querySelector(DOMstrings.percentageLabel);
 
-      if (income > 0) {
-        incomeField.innerHTML = '+ ' + income;
-      } else {
-        incomeField.innerHTML = income;
-      }
-
-      if (expenses > 0) {
-        expensesField.innerHTML = '- ' + expenses;
-      } else {
-        expensesField.innerHTML = expenses;
-      }
-
-      if (availableBudget > 0) {
-        availableBudgetField.innerHTML = '+ ' + availableBudget;
-      } else {
-        availableBudgetField.innerHTML = availableBudget;
-      }
-
-      if (totalPercentage >= 0) {
-        percentageField.innerHTML = totalPercentage + '%';
-      } else {
-        percentageField.innerHTML = '---';
-      }
+      incomeField.innerHTML = ((income > 0) ? '+ ' : '') + formatNumber(income);
+      expensesField.innerHTML = ((expenses > 0) ? '- ' : '') + formatNumber(expenses);
+      availableBudgetField.innerHTML = ((availableBudget > 0) ? '+ ' : '') + formatNumber(availableBudget);
+      percentageField.innerHTML = (totalPercentage > 0) ? formatNumber(totalPercentage) + '%' : '---';
     },
     updatePercentageForEachItem: function(expPercs, incPercs) {
       var expPercNodes, incPercNodes, updatePercForEachNodeList, replacePerc;
@@ -123,7 +120,7 @@ var UIController = (function() {
         }
       }
       replacePerc = function(node, perc) {
-        node.innerHTML = perc + '%';
+        node.innerHTML = !isNaN(perc) ? formatNumber(perc) + '%' : perc;
       }
       updatePercForEachNodeList(expPercNodes, expPercs, replacePerc);
       updatePercForEachNodeList(incPercNodes, incPercs, replacePerc);
@@ -137,6 +134,15 @@ var UIController = (function() {
         item = document.querySelector('#expense-' + id);
       }
       item.remove();
-    }
+    },
+    displayMonth: function() {
+      var now, month, months, year;
+      now = new Date();
+      month = now.getMonth();
+      year = now.getFullYear();
+      months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+      document.querySelector(DOMstrings.monthField).innerHTML = months[month] + ' ' + year;
+    },
   }
 }());

@@ -7,7 +7,11 @@ var dataController = (function() {
     this.percentage = percentage;
   }
   Expense.prototype.calcPercentage = function(totalInc) {
-    this.percentage = ((this.value / totalInc) * 100).toFixed(2);
+    if (totalInc > 0) {
+      this.percentage = (this.value / totalInc) * 100;
+    } else {
+      this.percentage = '---';
+    }
   }
 
   var Income = function(id, description, value, percentage) {
@@ -17,7 +21,7 @@ var dataController = (function() {
     this.percentage = percentage;
   }
   Income.prototype.calcPercentage = function(totalInc) {
-    this.percentage = ((this.value / totalInc) * 100).toFixed(2);
+    this.percentage = (this.value / totalInc) * 100;
   }
 
   var data = {
@@ -56,7 +60,7 @@ var dataController = (function() {
       // push new item to current array (use [] to access object value)
       data.allItems[type].push(newItem);
       // re-calculate total value
-      data.totals[type] = data.totals[type] + newItem.value;
+      data.totals[type] += newItem.value;
 
       return newItem;
     },
@@ -75,7 +79,7 @@ var dataController = (function() {
       index = ids.indexOf(id);
       // delete item
       if (index !== -1) {
-        data.totals[type] = data.totals[type] - data.allItems[type][index].value;
+        data.totals[type] -= data.allItems[type][index].value;
         data.allItems[type].splice(index, 1);
       }
     },
@@ -83,7 +87,7 @@ var dataController = (function() {
       // calculate display budget value
       data.availableBudget = data.totals.inc - data.totals.exp;
       if (data.totals.inc > 0) {
-        data.totalPercentage = ((data.totals.exp / data.totals.inc) * 100).toFixed(2);
+        data.totalPercentage = (data.totals.exp / data.totals.inc) * 100;
       } else {
         data.totalPercentage = -1;
       }

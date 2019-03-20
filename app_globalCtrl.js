@@ -84,6 +84,7 @@ var controller = (function(dataCtrl, UICtrl) {
     init: function() {
       console.log('Application has started.');
       setupEventListeners();
+      UICtrl.displayMonth();
       UICtrl.updateBudget(initialValue.INCOME,
                           initialValue.EXPENSES,
                           initialValue.AVAILABEL_BUDGET,
