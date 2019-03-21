@@ -144,5 +144,21 @@ var UIController = (function() {
 
       document.querySelector(DOMstrings.monthField).innerHTML = months[month] + ' ' + year;
     },
+    changeInputBorderColor: function() {
+      var fieldList = document.querySelectorAll(DOMstrings.inputType + ','
+                                             + DOMstrings.inputDescription + ','
+                                             + DOMstrings.inputValue);
+      var forEachNodeList = function(nodeList, callback) {
+        for (var i = 0; i < nodeList.length; i++) {
+          callback(nodeList[i]);
+        }
+      };
+      forEachNodeList(fieldList, function(current) {
+        current.classList.toggle('red-focus');
+      });
+
+      var addBtn = document.querySelector(DOMstrings.inputBtn);
+      addBtn.classList.toggle('red');
+    }
   }
 }());

@@ -6,22 +6,24 @@ var controller = (function(dataCtrl, UICtrl) {
     AVAILABEL_BUDGET: 0,
     PERCENTAGE: -1,
   }
-  var DOMStrings = UICtrl.getDOMstrings();
+  var DOMstrings = UICtrl.getDOMstrings();
 
   var setupEventListeners = function() {
     // event listener for add item button
-    document.querySelector(DOMStrings.inputBtn).addEventListener('click', ctrlAddItem);
+    document.querySelector(DOMstrings.inputBtn).addEventListener('click', ctrlAddItem);
     document.addEventListener('keypress', function(event) {
       if (event.keyCode === 13 || event.which === 13) {
         ctrlAddItem();
       }
     });
     // event listener for delete item button (use event delegate)
-    document.querySelector(DOMStrings.container).addEventListener('click', ctrlDeleteItem);
+    document.querySelector(DOMstrings.container).addEventListener('click', ctrlDeleteItem);
+    // improve UX
+    document.querySelector(DOMstrings.inputType).addEventListener('change', UICtrl.changeInputBorderColor);
   }
 
   var ctrlDeleteItem = function(event) {
-    if (!event.target.matches(DOMStrings.deleteButton)) {
+    if (!event.target.matches(DOMstrings.deleteButton)) {
       return;
     }
     // in case delete button is clicked
